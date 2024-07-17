@@ -1,114 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BrowserRouter } from 'react-router-dom'
-import Header from './Header';
-import Footer from './Footer';
+"use client"
+import React, { useState } from 'react';
 import { useLoadingContext } from "react-router-loading";
-import toast from 'react-hot-toast';
-export default function Contact() {
-  const loadingContext = useLoadingContext();
-  setInterval(function () { loadingContext.done() }, 1000);
 
-  const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    message: '',
-    subject: '',
-    access_key: "a6570e0d-ce08-42c1-bd8c-60bed1fe7815",
-  });
+const Contact = () => {
+     const loadingContext = useLoadingContext();
+     setInterval(function () { loadingContext.done() }, 1000);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
 
-  const saveSettings = async (formData) => {
-    await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    const validate = () => {
+        let errors = {};
+        if (!formData.name) {
+            errors.name = "Name is required";
         }
-        return response.json();
+        if (!formData.email) {
+            errors.email = "Email is required";
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            errors.email = "Email address is invalid";
+        }
+        if (!formData.message) {
+            errors.message = "Message is required";
+        }
+        return errors;
+    };
 
-      })
-      .catch(error => {
-        toast.error('There was a problem submitting the form:');
-      });
-  }
-
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (formData.email === '' || formData.name === '' || formData.message === '') {
-      toast.error('Please fill all the fields')
-    } else if (formData.email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        toast.error('email is not valid')
-      } else {
-        const result = await toast.promise(
-          saveSettings(formData),
-          {
-            loading: 'Please wait while we sending your data...',
-            success: <b>form submitted successfully</b>,
-            error: <b>Could not save.</b>,
-          }
-        );
-        setFormData({ email: '', name: '', message: '', subject: '' });
-      }
-    }
-  }
-
-
-
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length === 0) {
+            try {
+                // const response = await submitContact(formData);
+                // if (response) {
+                //     toast.success('Message sent successfully!');
+                //     setFormData({
+                //         name: '',
+                //         email: '',
+                //         message: ''
+                //     });
+                // }
+            } catch (error) {
+                // toast.error('Failed to send message');
+            }
+        } else {
+            setErrors(validationErrors);
+        }
+    };
 
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
 
-  return (
-    <>
-      <Header />
-      <section class="about" id="about">
-        <div class="max-width">
-          <h2 class="title">Contact Me</h2>
-          <div class="about-content">
-            <div class="column left">
-              <img src="https://source.unsplash.com/626x626/?dark" alt="Profile Image 626x626" />
+    return (
+        <>
+            <div className="w-full bg-gradient-to-l from-blue-300 py-10 p-10 sm:px-0 ">
+                <h1 className="text-3xl font-bold text-center">Get in Touch</h1>
+                <p className="text-center mb-8">Feel free to contact me via email at "mukul6307@gmail.com" or fill out the form below. I look forward to hearing from you!</p>
+                <div className="max-w-md mx-auto p-4 bg-grey-500  border-2 text-grey-100 shadow-[5px_5px_rgba(0,_98,_90,_0.4),_10px_10px_rgba(0,_98,_90,_0.3),_15px_15px_rgba(0,_98,_90,_0.2),_20px_20px_rgba(0,_98,_90,_0.1),_25px_25px_rgba(0,_98,_90,_0.05)] rounded-lg">
+                    <h2 className="text-xl font-semibold mb-4 text-center">Contact Us</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="name" className="block lifont-bold mb-2">Name</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                className={`w-full px-4 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded focus:outline-none focus:border-green-500`}
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                            {errors.name && <p className="text-red-500 li mt-1">{errors.name}</p>}
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block lifont-bold mb-2">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                className={`w-full px-4 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded focus:outline-none focus:border-green-500`}
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                            {errors.email && <p className="text-red-500 li mt-1">{errors.email}</p>}
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="message" className="block lifont-bold mb-2">Message</label>
+                            <textarea
+                                id="message"
+                                name="message"
+                                rows={4}
+                                className={`w-full px-4 py-2 border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded focus:outline-none focus:border-green-500`}
+                                value={formData.message}
+                                onChange={handleChange}
+                            />
+                            {errors.message && <p className="text-red-500 li mt-1">{errors.message}</p>}
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full bg-black text-white px-4 py-2 rounded hover:bg-custom-secondary focus:outline-none focus:bg-custom-secondary"
+                        >
+                            Submit
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="column right">
-              <form class="space-y-3  text-base " onSubmit={handleSubmit}>
-                <div>
-                  <label for="email" class="block text-base font-medium text-gray-600 dark:text-gray-400 ">Your email</label>
-                  <input type="text" value={formData.email} name="email"
-                    onChange={handleChange} class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900  text-base rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="name@flowbite.com" />
-                </div>
-                <div>
-                  <label for="subject" class="block mb-2  text-base font-medium text-gray-600 dark:text-gray-300">Name</label>
-                  <input type="text" value={formData.name} name="name"
-                    onChange={handleChange} class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="Let us know how we can help you" />
-                </div>
-
-
-                <div class="sm:col-span-2">
-                  <label for="message" class="block mb-2 text-base font-medium  text-gray-600 dark:text-gray-400">Your message</label>
-                  <textarea value={formData.message}
-                    onChange={handleChange} rows="6" name="message" class="block p-2.5 w-full  text-base text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Leave a comment..."></textarea>
-                </div>
-                <button type='submit' class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-[#142832] sm:w-fit hover:bg-[#0d2028] focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-400" >Send message</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-      <Footer />
-    </>
-  )
+        </>
+    );
 }
+
+export default Contact;
