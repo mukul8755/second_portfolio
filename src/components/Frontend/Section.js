@@ -5,7 +5,7 @@ const SectionPage = () => {
         <section className="bg-gradient-to-l from-blue-300 py-2 md:py-20">
             <div className="max-w-4xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center md:space-x-10">
                 <div className="w-full md:w-1/2 mt-5 p-2">
-                    <div className="text-4xl font-bold text-black mb-4">Hello, My name is Abhishek</div>
+                    <div className="text-4xl font-bold text-black mb-4">Hello, My name is Mukul Sharma</div>
                     <p className="text-xl text-black mb-8">
                         I'm a passionate Web Developer with experience in building responsive and user-friendly web applications.
                         My expertise includes frontend technologies like React, HTML, CSS, and JavaScript.
