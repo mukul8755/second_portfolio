@@ -19,11 +19,11 @@ function User() {
                 <Route path='*' element={<NotFound />}  />
                 <Route exact path="/" element={<Home />}  />
                 <Route exact path="/about" element={<About />} />
-                <Route path="/project" element={<Project />}  />
-                <Route path="/blog" element={<Blog />}  />
+                <Route exact path="/project" element={<Project />}  />
+                <Route exact path="/blog" element={<Blog />}  />
                 <Route path="/blog/:id" element={<BlogView />}  />
-                <Route path="/contact" element={<Contact />}  />
-                <Route path="/profile" element={<Profile />}  />
+                <Route exact path="/contact" element={<Contact />}  />
+                <Route exact path="/profile" element={<Profile />}  />
             </Routes>
         </BrowserRouter >
     );
